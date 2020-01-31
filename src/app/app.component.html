@@ -28,7 +28,7 @@
     cdkDragLockAxis="x"
   >
     <ul>
-      <li *ngFor="let message of messages[user.uid]">
+      <li *ngFor="let message of messages[user.uid]" class="message">
         {{ message }}
       </li>
     </ul>
