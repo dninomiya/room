@@ -35,11 +35,17 @@ export class RoomService {
   }
 
   sendMessage(uid: string, body: string) {
-    this.db.collection('messages').add({
+    const id = this.db.createId();
+    this.db.doc(`messages/${id}`).set({
+      id,
       uid,
       body,
       createdAt: new Date()
     });
+  }
+
+  deleteMessage(id: string) {
+    this.db.doc(`messages/${id}`).delete();
   }
 
   getLatestMessage(): Observable<Message[]> {

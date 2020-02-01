@@ -41,6 +41,10 @@ export class AppComponent {
     private fb: FormBuilder
   ) {
     this.roomService.getLatestMessage().pipe(skip(1)).subscribe(messages => {
+      if (!messages[0]) {
+        return;
+      }
+
       const message = messages[0];
       if (!this.messages[message.uid]) {
         this.messages[message.uid] = [];
