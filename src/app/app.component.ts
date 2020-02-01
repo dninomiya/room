@@ -23,13 +23,21 @@ export class AppComponent {
   form = this.fb.group({
     body: ['', Validators.required]
   });
+  playerVars = {
+    controls: 0
+  };
+  id = 'qDuKsiwS5xw';
+  player: YT.Player;
+  youtubeForm = this.fb.group({
+    url: ['', Validators.required]
+  });
 
   constructor(
     private authService: AuthService,
     private roomService: RoomService,
     private fb: FormBuilder
   ) {
-    this.roomService.getLatestMessage().subscribe(messages => {
+    this.roomService.getLatestMessage().pipe(skip(1)).subscribe(messages => {
       const message = messages[0];
       if (!this.messages[message.uid]) {
         this.messages[message.uid] = [];
@@ -38,6 +46,12 @@ export class AppComponent {
       setTimeout(() => {
         this.messages[message.uid].pop();
       }, 5000);
+    });
+
+    this.roomService.videoId$.subscribe(videoId => {
+      if (this.player) {
+        this.player.loadVideoById(videoId);
+      }
     });
   }
 
@@ -59,5 +73,17 @@ export class AppComponent {
       this.form.value.body
     );
     this.form.reset();
+  }
+
+  savePlayer(player) {
+    this.player = player;
+    this.player.playVideo();
+    this.player.mute();
+  }
+
+  changeVideo() {
+    if (this.youtubeForm.valid) {
+      this.roomService.changeVideo(this.youtubeForm.value.url);
+    }
   }
 }

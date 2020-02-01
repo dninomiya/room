@@ -13,8 +13,7 @@ import { environment } from '../environments/environment';
 import { MatToolbarModule, MatButtonModule, MatInputModule, MatIconModule, MatFormFieldModule } from '@angular/material';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-
+import { NgxYoutubePlayerModule } from 'ngx-youtube-player';
 
 @NgModule({
   declarations: [
@@ -34,7 +33,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatIconModule,
     DragDropModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxYoutubePlayerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

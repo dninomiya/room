@@ -1,3 +1,4 @@
+import { Video } from './../interfaces/video';
 import { Message } from './../interfaces/message';
 import { Light } from './../interfaces/light';
 import { User } from './../interfaces/user';
@@ -13,6 +14,10 @@ export class RoomService {
 
   lightStatus$ = this.db.doc<Light>('room/light').valueChanges().pipe(
     map(data => data && data.status)
+  );
+
+  videoId$: Observable<string> = this.db.doc<Video>('room/video').valueChanges().pipe(
+    map(data => data && data.id)
   );
 
   constructor(
@@ -39,5 +44,20 @@ export class RoomService {
 
   getLatestMessage(): Observable<Message[]> {
     return this.db.collection<Message>('messages', ref => ref.orderBy('createdAt', 'desc').limit(1)).valueChanges();
+  }
+
+  changeVideo(url: string) {
+    const matcher = url.match(/https:\/\/www\.youtube\.com\/watch\?v=(.+)/);
+
+    if (matcher) {
+      const id = matcher[1];
+      console.log(id);
+      this.db.doc('room/video').set({
+        id
+      });
+    } else {
+      console.log('URLが不正です');
+      return null;
+    }
   }
 }
