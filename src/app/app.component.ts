@@ -1,3 +1,4 @@
+import { Item } from './interfaces/item';
 import { Message } from './interfaces/message';
 import { RoomService } from './services/room.service';
 import { AuthService } from './services/auth.service';
@@ -31,6 +32,8 @@ export class AppComponent {
   youtubeForm = this.fb.group({
     url: ['', Validators.required]
   });
+  items = new Array(44);
+  roomItems: Item[] = [];
 
   constructor(
     private authService: AuthService,
@@ -85,5 +88,16 @@ export class AppComponent {
     if (this.youtubeForm.valid) {
       this.roomService.changeVideo(this.youtubeForm.value.url);
     }
+  }
+
+  putItem(id: number) {
+    this.roomItems.push({
+      id,
+      size: 'md'
+    });
+  }
+
+  changeItemSize(index: number, size: 'sm' | 'md' | 'lg') {
+    this.roomItems[index].size = size;
   }
 }

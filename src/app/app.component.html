@@ -1,4 +1,7 @@
 <mat-toolbar>
+  <button mat-icon-button (click)="side.toggle()">
+    <mat-icon class="mat-18">menu</mat-icon>
+  </button>
   <button mat-button>ROOM</button>
   <span class="spacer"></span>
   <button
@@ -14,74 +17,104 @@
   </button>
 </mat-toolbar>
 
-<div class="room" [class.dark]="!(lightStatus$ | async)">
-  <div class="room__light" (click)="toggleLight()">
-    <img src="assets/images/light.png" alt="" />
-  </div>
+<mat-sidenav-container>
+  <mat-sidenav #side mode="side" class="side">
+    <div class="item-grid">
+      <mat-card *ngFor="let item of items; index as i" (click)="putItem(i + 1)">
+        <img
+          src="assets/images/items/furniture-{{ i + 1 | number: '2.0' }}.png"
+          alt=""
+        />
+      </mat-card>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="room" [class.dark]="!(lightStatus$ | async)">
+      <div class="room__light" (click)="toggleLight()">
+        <img src="assets/images/light.png" alt="" />
+      </div>
 
-  <div class="room__display" cdkDrag cdkDragBoundary=".room">
-    <youtube-player
-      width="100%"
-      height="100%"
-      [videoId]="id"
-      (ready)="savePlayer($event)"
-      [playerVars]="playerVars"
-    ></youtube-player>
-  </div>
+      <div class="room__display" cdkDrag cdkDragBoundary=".room">
+        <youtube-player
+          width="100%"
+          height="100%"
+          [videoId]="id"
+          (ready)="savePlayer($event)"
+          [playerVars]="playerVars"
+        ></youtube-player>
+      </div>
 
-  <div
-    class="user"
-    *ngFor="let user of users$ | async"
-    [style.left]="user.leftPosition"
-    cdkDrag
-    cdkDragBoundary=".room"
-    cdkDragLockAxis="x"
-  >
-    <ul>
-      <li *ngFor="let message of messages[user.uid]" class="message">
-        {{ message }}
-      </li>
-    </ul>
-    <img src="assets/images/chars/{{ user.avatarId }}.png" alt="" />
-  </div>
+      <div *ngFor="let item of roomItems; index as i">
+        <img
+          class="item item--{{ item.size }}"
+          cdkDrag
+          cdkDragBoundary=".room"
+          [matMenuTriggerFor]="menu"
+          src="assets/images/items/furniture-{{ item.id | number: '2.0' }}.png"
+          alt=""
+        />
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="changeItemSize(i, 'lg')">大</button>
+          <button mat-menu-item (click)="changeItemSize(i, 'md')">中</button>
+          <button mat-menu-item (click)="changeItemSize(i, 'sm')">小</button>
+        </mat-menu>
+      </div>
 
-  <div class="room__floor"></div>
-</div>
+      <div
+        class="user"
+        *ngFor="let user of users$ | async"
+        [style.left]="user.leftPosition"
+        cdkDrag
+        cdkDragBoundary=".room"
+        cdkDragLockAxis="x"
+      >
+        <ul>
+          <li *ngFor="let message of messages[user.uid]" class="message">
+            {{ message }}
+          </li>
+        </ul>
+        <img src="assets/images/chars/{{ user.avatarId }}.png" alt="" />
+      </div>
 
-<form
-  *ngIf="user$ | async as user"
-  [formGroup]="form"
-  (ngSubmit)="sendMessage(user.uid)"
->
-  <mat-form-field>
-    <mat-label>チャット</mat-label>
-    <input
-      type="text"
-      formControlName="body"
-      matInput
-      autofocus
-      autocomplete="off"
-      required
-    />
-  </mat-form-field>
-  <button mat-icon-button [disabled]="form.invalid">
-    <mat-icon>send</mat-icon>
-  </button>
-</form>
+      <div class="room__floor"></div>
+    </div>
 
-<form [formGroup]="youtubeForm" (ngSubmit)="changeVideo()">
-  <mat-form-field>
-    <mat-label>YouTube URL</mat-label>
-    <input
-      type="url"
-      formControlName="url"
-      matInput
-      autofocus
-      autocomplete="off"
-      required
-    />
-  </mat-form-field>
-  <button mat-icon-button [disabled]="youtubeForm.invalid">
-    <mat-icon class="mat-18">send</mat-icon>
-  </button>
-</form>
+    <form
+      *ngIf="user$ | async as user"
+      [formGroup]="form"
+      (ngSubmit)="sendMessage(user.uid)"
+    >
+      <mat-form-field>
+        <mat-label>チャット</mat-label>
+        <input
+          type="text"
+          formControlName="body"
+          matInput
+          autofocus
+          autocomplete="off"
+          required
+        />
+      </mat-form-field>
+      <button mat-icon-button [disabled]="form.invalid">
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+
+    <form [formGroup]="youtubeForm" (ngSubmit)="changeVideo()">
+      <mat-form-field>
+        <mat-label>YouTube URL</mat-label>
+        <input
+          type="url"
+          formControlName="url"
+          matInput
+          autofocus
+          autocomplete="off"
+          required
+        />
+      </mat-form-field>
+      <button mat-icon-button [disabled]="youtubeForm.invalid">
+        <mat-icon class="mat-18">send</mat-icon>
+      </button>
+    </form>
+  </mat-sidenav-content>
+</mat-sidenav-container>

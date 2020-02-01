@@ -51,6 +51,9 @@
     background: #000;
     overflow: hidden;
     padding: 16px;
+    youtube-player {
+      pointer-events: none;
+    }
   }
 }
 
@@ -63,4 +66,30 @@
 
 .message {
   white-space: nowrap;
+}
+
+.side {
+  width: 400px;
+}
+
+.item-grid {
+  display: grid;
+  gap: 16px;
+  margin: 16px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.item {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  &--sm {
+    width: 80px;
+  }
+  &--md {
+    width: 150px;
+  }
+  &--lg {
+    width: 300px;
+  }
 }
